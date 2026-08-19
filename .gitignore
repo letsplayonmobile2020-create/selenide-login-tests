@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Maven
+target/
+
+# Selenide reports
+build/reports/
+*.png
+*.html
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Конфиг с URL — не храним в git
+config.properties
