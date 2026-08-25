@@ -20,29 +20,24 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+          cache: 'maven' # Кэш оставляем, но используем его правильно
 
-      # 1. Скачиваем зависимости заранее, чтобы AspectJ точно был в кэше
+      # ШАГ 1: Принудительно скачиваем все зависимости
+      # Это гарантирует, что aspectjweaver будет скачан и проверен на целостность
       - name: Download Dependencies
-        run: mvn dependency:resolve-plugins dependency:resolve
+        run: mvn dependency:resolve-plugins dependency:resolve -B
 
-      # 2. ЗАПУСК ТЕСТОВ
-      # ВАЖНО: Здесь НЕТ continue-on-error. Если тесты падают, шаг падает -> билд красный.
+      # ШАГ 2: Запуск тестов
+      # MAVEN_OPTS УДАЛЕН! Агент теперь берется из pom.xml
       - name: Run Tests
-        run: mvn test
-        env:
-          # Подключаем агент AspectJ через переменную окружения
-          MAVEN_OPTS: "-javaagent:/home/runner/.m2/repository/org/aspectj/aspectjweaver/1.9.21/aspectjweaver-1.9.21.jar"
+        run: mvn test -B
 
-      # 3. ГЕНЕРАЦИЯ ОТЧЕТА
-      # Если тесты упали, но результаты (allure-results) есть, отчет сгенерируется.
-      # continue-on-error: true здесь нужен как страховка, если сам плагин allure:report вдруг упадет.
+      # ШАГ 3: Генерация отчета
       - name: Generate Allure Report
-        run: mvn allure:report
+        run: mvn allure:report -B
         continue-on-error: true
 
-      # 4. ЗАГРУЗКА АРТЕФАКТА
-      # if: always() гарантирует, что этот шаг запустится, даже если предыдущие шаги были красными.
+      # ШАГ 4: Загрузка артефакта (всегда)
       - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v4
         if: always()
