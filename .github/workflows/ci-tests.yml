@@ -1,8 +1,8 @@
-name: CI Tests & Allure Report (Artifact Only)
+name: CI Tests & Allure Report
 
 on:
   push:
-    branches: [ "feature/allure-ci-report" ]
+    branches: [ "main", "feature/*" ]
 
 permissions:
   contents: read
@@ -20,22 +20,32 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
+      # 1. Скачиваем зависимости заранее, чтобы AspectJ точно был в кэше
+      - name: Download Dependencies
+        run: mvn dependency:resolve-plugins dependency:resolve
 
-      # ВАЖНО: continue-on-error: true гарантирует, что шаг не остановит пайплайн, если тесты упадут
-      - name: Run Tests & Generate Allure Results
+      # 2. ЗАПУСК ТЕСТОВ
+      # ВАЖНО: Здесь НЕТ continue-on-error. Если тесты падают, шаг падает -> билд красный.
+      - name: Run Tests
         run: mvn test
-        continue-on-error: true
+        env:
+          # Подключаем агент AspectJ через переменную окружения
+          MAVEN_OPTS: "-javaagent:/home/runner/.m2/repository/org/aspectj/aspectjweaver/1.9.21/aspectjweaver-1.9.21.jar"
 
+      # 3. ГЕНЕРАЦИЯ ОТЧЕТА
+      # Если тесты упали, но результаты (allure-results) есть, отчет сгенерируется.
+      # continue-on-error: true здесь нужен как страховка, если сам плагин allure:report вдруг упадет.
       - name: Generate Allure Report
         run: mvn allure:report
         continue-on-error: true
 
-      # ЭТОТ ШАГ: Сохраняет папку с отчетом, чтобы его скачать
+      # 4. ЗАГРУЗКА АРТЕФАКТА
+      # if: always() гарантирует, что этот шаг запустится, даже если предыдущие шаги были красными.
       - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: allure-report
           path: target/site/allure-maven-plugin
