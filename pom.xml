@@ -15,6 +15,9 @@
         <webdrivermanager.version>5.9.0</webdrivermanager.version>
         <junit.jupiter.version>5.10.1</junit.jupiter.version>
         <slf4j.version>2.0.9</slf4j.version>
+        <allure.version>2.24.0</allure.version>
+        <!-- ВАЖНО: Версия AspectJ, необходимая для работы Allure -->
+        <aspectj.version>1.9.21</aspectj.version>
     </properties>
 
     <dependencies>
@@ -25,7 +28,7 @@
             <version>${selenide.version}</version>
         </dependency>
 
-        <!-- WebDriverManager (если ты его явно используешь в коде) -->
+        <!-- WebDriverManager -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
@@ -41,11 +44,27 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- SLF4J (чтобы убрать предупреждения про отсутствие логгера) -->
+        <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- Allure JUnit5 адаптер -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allure Selenide интеграция (автоматически цепляет скриншоты при падении) -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-selenide</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -72,8 +91,34 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <!-- Важно для JUnit 5 -->
                     <useModulePath>false</useModulePath>
+                    <!-- Указываем, куда складывать сырые данные Allure (в target/allure-results) -->
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                    <!-- Подключаем AspectJ Weaver через argLine -->
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                </configuration>
+                <!-- Добавляем зависимость AspectJ прямо в плагин, чтобы Surefire мог её найти -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Allure Maven Plugin (для генерации отчёта) -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <!-- Явно указываем путь к результатам -->
+                    <reportDirectory>${project.build.directory}/site/allure-maven-plugin</reportDirectory>
                 </configuration>
             </plugin>
         </plugins>
