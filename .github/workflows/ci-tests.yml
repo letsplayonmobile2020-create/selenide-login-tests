@@ -1,13 +1,11 @@
-name: CI Tests & Allure Report
+name: CI Tests & Allure Report (Artifact Only)
 
 on:
   push:
-    branches: [ "feature/allure-ci-report" ]  # Следим ТОЛЬКО за этой веткой, пока тестируем
+    branches: [ "feature/allure-ci-report" ]
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   build-and-test:
@@ -23,29 +21,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Сборка без тестов (чтобы проверить, что проект вообще собирается)
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
-      # Запуск тестов. Они должны упасть (это нормально для проверки скриншотов)
+      # ВАЖНО: continue-on-error: true гарантирует, что шаг не остановит пайплайн, если тесты упадут
       - name: Run Tests & Generate Allure Results
         run: mvn test
-        continue-on-error: true  # ВАЖНО: не останавливать пайплайн, если тесты красные
+        continue-on-error: true
 
-      # Генерация HTML-отчета из результатов
       - name: Generate Allure Report
         run: mvn allure:report
         continue-on-error: true
 
-      # Публикация отчета на GitHub Pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # ЭТОТ ШАГ: Сохраняет папку с отчетом, чтобы его скачать
+      - name: Upload Allure Report as Artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: 'target/site/allure-maven'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: allure-report
+          path: target/site/allure-maven
+          retention-days: 7
