@@ -13,7 +13,7 @@ public class LoginPage {
     }
 
     private SelenideElement loginButton() {
-        return $("button[type='submit1']");
+        return $("button[type='submit']");
     }
 
     public void login(String username, String password) {
