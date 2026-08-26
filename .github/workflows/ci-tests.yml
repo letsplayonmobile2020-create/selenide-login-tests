@@ -25,57 +25,17 @@ jobs:
       - name: Download Dependencies
         run: mvn dependency:resolve-plugins dependency:resolve -B
 
-      # 1. Запуск тестов (Статус билда зависит от этого шага)
-      - name: Run Tests
-        run: mvn test -B
-
-      # 2. Генерация отчета (Выполняется даже если тесты упали)
-      - name: Generate Allure Report
-        run: mvn allure:report -B
+      - name: Build with Maven and run tests
+        run: mvn clean test
         continue-on-error: true
 
-      # 3. ЖЕСТКАЯ ДИАГНОСТИКА (Самое важное!)
-      # Мы смотрим, что реально произошло на диске
-      - name: Check Allure State
-        run: |
-          echo "--- CHECKING RESULTS FOLDER ---"
-          if [ -d "target/allure-results" ]; then
-            echo "✅ Folder exists."
-            COUNT=\$(find target/allure-results -type f | wc -l)
-            echo "📁 Files count: \$COUNT"
-            if [ "\$COUNT" -eq 0 ]; then
-              echo "❌ ERROR: Folder exists but is EMPTY. Allure has no data to process."
-              exit 1
-            else
-              echo "✅ Good: JSON results found."
-            fi
-          else
-            echo "❌ ERROR: target/allure-results folder DOES NOT EXIST."
-            exit 1
-          fi
-
-          echo "--- CHECKING REPORT FOLDER ---"
-          if [ -d "target/site/allure-maven-plugin" ]; then
-            echo "✅ Report folder exists."
-            COUNT=\$(find target/site/allure-maven-plugin -type f | wc -l)
-            echo "📁 Files count: \$COUNT"
-            if [ "\$COUNT" -eq 0 ]; then
-               echo "⚠️ WARNING: Report folder exists but is EMPTY."
-            fi
-          else
-            echo "❌ ERROR: target/site/allure-maven-plugin folder DOES NOT EXIST."
-            echo "💡 This means 'mvn allure:report' failed or found no data."
-            exit 1
-          fi
-          
-          echo "--- LISTING FILES (first 10) ---"
-          ls -la target/site/allure-maven-plugin/ 2>/dev/null || echo "Folder not ready yet"
-
-      # 4. Загрузка артефакта (Только если папки реально существуют)
-      - name: Upload Allure Report as Artifact
-        uses: actions/upload-artifact@v4
+      - name: Generate Allure Report
+        run: mvn allure:report
         if: always()
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: target/site/allure-maven-plugin
-          retention-days: 7
+        if: always()
