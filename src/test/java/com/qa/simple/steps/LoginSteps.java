@@ -68,14 +68,20 @@ public class LoginSteps {
      */
     @Step("Шаг: Ждём перехода на страницу с фрагментом '{0}' и гасим алерт при необходимости")
     public void ensureSecurePageAndSuppressAlert() {
+        boolean isCI = System.getenv("CI") != null
+                || System.getenv("GITHUB_ACTIONS") != null
+                || System.getenv("GITLAB_CI") != null;
+        if (isCI) {
+            return; // В CI алертов нет, Robot не нужен
+        }
         try {
             System.out.println("[INFO] Попытка закрыть алерт утечки пароля (ESC)...");
             Robot robot = new Robot();
             robot.keyPress(KeyEvent.VK_ESCAPE);
+            robot.keyRelease(KeyEvent.VK_ESCAPE);
             System.out.println("[INFO] Алерт обработан.");
         } catch (Exception e) {
-            // В headless-режиме (CI) Robot может не создаваться — это ожидаемо
-            System.out.println("[DEBUG] Robot недоступен (возможно, headless): " + e.getMessage());
+            System.out.println("[DEBUG] Robot недоступен: " + e.getMessage());
         }
     }
 
