@@ -1,4 +1,4 @@
-package utils;
+package com.qa.simple.config;
 
 public class EnvUtils {
     private EnvUtils() {}
