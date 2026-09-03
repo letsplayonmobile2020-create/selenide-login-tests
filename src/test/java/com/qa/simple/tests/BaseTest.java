@@ -2,6 +2,7 @@ package com.qa.simple.tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.qa.simple.config.EnvUtils;
 import com.qa.simple.config.TestConfig;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterAll;
@@ -62,7 +63,7 @@ public class BaseTest {
 
     @AfterEach
     void tearDown() {
-        if (utils.EnvUtils.isCi()) {
+        if (EnvUtils.isCi()) {
             // CI: Полная изоляция. Гарантирует, что следующий тест начнется с чистого листа.
             Selenide.closeWebDriver();
         } else {

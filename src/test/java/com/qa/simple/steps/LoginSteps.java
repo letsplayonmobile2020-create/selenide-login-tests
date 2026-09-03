@@ -3,6 +3,7 @@ package com.qa.simple.steps;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import com.qa.simple.config.EnvUtils;
 import com.qa.simple.pages.LoginPage;
 import com.qa.simple.pages.SecurePage;
 import io.qameta.allure.Step;
@@ -68,7 +69,7 @@ public class LoginSteps {
      */
     @Step("Шаг: Ждём перехода на страницу с фрагментом '{0}' и гасим алерт при необходимости")
     public void ensureSecurePageAndSuppressAlert() {
-        if (utils.EnvUtils.isCi()) {
+        if (EnvUtils.isCi()) {
             return; // В CI алертов нет, Robot не нужен
         }
         try {
