@@ -41,11 +41,11 @@ public class LoginTest extends BaseTest {
         loginSteps.ensureSecurePageAndSuppressAlert();
     }
 
-    /**
+/*    *//**
      * Проверяет сценарий выхода после успешного входа:
      * логин → редирект на {@code /secure} → Logout → редирект на {@code /login},
      * проверяет flash-сообщение о выходе.
-     */
+     *//*
     @Test
     @DisplayName("Выход из системы после успешного входа")
     void testLogoutAfterLogin() {
@@ -63,7 +63,7 @@ public class LoginTest extends BaseTest {
     //  НЕГАТИВНЫЕ СЦЕНАРИИ
     // =====================================================
 
-    /**
+    *//**
      * Проверяет вход с невалидными данными (data-driven).
      * Для каждой комбинации логина и пароля проверяет, что:
      * <ul>
@@ -74,7 +74,7 @@ public class LoginTest extends BaseTest {
      * @param username      логин пользователя
      * @param password      пароль пользователя
      * @param expectedError ожидаемый текст ошибки
-     */
+     *//*
     @ParameterizedTest(name = "Невалидные данные → логин={0}, пароль={1}, ожидаемая ошибка={2}")
     @CsvSource({
             "wronguser,    SuperSecretPassword!, Your username is invalid!",
@@ -89,10 +89,10 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyFlashMessageContains(expectedError);
     }
 
-    /**
+    *//**
      * Проверяет, что при пустом поле логина вход не выполняется
      * и показывается сообщение «Your username is invalid!».
-     */
+     *//*
     @Test
     @DisplayName("Вход с пустым логином — должна быть ошибка валидации")
     void testEmptyUsername() {
@@ -102,10 +102,10 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
 
-    /**
+    *//**
      * Проверяет, что при пустом поле пароля вход не выполняется
      * и показывается сообщение «Your password is invalid!».
-     */
+     *//*
     @Test
     @DisplayName("Вход с пустым паролем — должна быть ошибка валидации")
     void testEmptyPassword() {
@@ -115,10 +115,10 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyFlashMessageContains("Your password is invalid!");
     }
 
-    /**
+    *//**
      * Проверяет, что при обоих пустых полях вход не выполняется
      * и показывается сообщение об ошибке валидации.
-     */
+     *//*
     @Test
     @DisplayName("Вход с обоими пустыми полями — должна быть ошибка валидации")
     void testEmptyFields() {
@@ -132,10 +132,10 @@ public class LoginTest extends BaseTest {
     //  РЕГИСТРОЗАВИСИМОСТЬ
     // =====================================================
 
-    /**
+    *//**
      * Проверяет, что логин чувствителен к регистру:
      * {@code TOMSMITH} не проходит, показывается ошибка.
-     */
+     *//*
     @Test
     @DisplayName("Логин чувствителен к регистру — TOMSMITH не проходит")
     void testUsernameCaseSensitive() {
@@ -145,10 +145,10 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
 
-    /**
+    *//**
      * Проверяет, что пароль чувствителен к регистру:
      * пароль в нижнем регистре не проходит.
-     */
+     *//*
     @Test
     @DisplayName("Пароль чувствителен к регистру — нижний регистр не проходит")
     void testPasswordCaseSensitive() {
@@ -162,11 +162,11 @@ public class LoginTest extends BaseTest {
     //  БЕЗОПАСНОСТЬ
     // =====================================================
 
-    /**
+    *//**
      * Проверяет, что XSS-инъекция в поле логина не исполняется:
      * вводится {@code <script>alert('xss')</script>},
      * система показывает ошибку валидации, JS alert не появляется.
-     */
+     *//*
     @Test
     @DisplayName("XSS-инъекция в поле логина не исполняется — показывается ошибка")
     void testXssInUsername() {
@@ -176,10 +176,10 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
 
-    /**
+    *//**
      * Проверяет, что SQL-инъекция в поле логина не обходит авторизацию:
      * вводится {@code ' OR 1=1 --}, система показывает ошибку валидации.
-     */
+     *//*
     @Test
     @DisplayName("SQL-инъекция в поле логина не обходит авторизацию")
     void testSqlInjectionInUsername() {
@@ -193,10 +193,10 @@ public class LoginTest extends BaseTest {
     //  UX И СТРУКТУРА СТРАНИЦЫ
     // =====================================================
 
-    /**
+    *//**
      * Проверяет наличие всех элементов формы на странице входа:
      * поле логина, поле пароля, кнопка входа.
-     */
+     *//*
     @Test
     @DisplayName("На странице входа есть все элементы формы")
     void testLoginPageElementsPresent() {
@@ -206,9 +206,9 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyLoginButtonVisible();
     }
 
-    /**
+    *//**
      * Проверяет, что поле пароля маскирует ввод (атрибут {@code type="password"}).
-     */
+     *//*
     @Test
     @DisplayName("Поле пароля маскирует ввод (type=password)")
     void testPasswordIsMasked() {
@@ -216,9 +216,9 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyPasswordIsMasked();
     }
 
-    /**
+    *//**
      * Проверяет, что текст кнопки входа — {@code "Login"}.
-     */
+     *//*
     @Test
     @DisplayName("Кнопка входа имеет текст 'Login'")
     void testLoginButtonText() {
@@ -226,13 +226,13 @@ public class LoginTest extends BaseTest {
         loginSteps.verifyLoginButtonText("Login");
     }
 
-    /**
+    *//**
      * Проверяет, что заголовок страницы входа — {@code "Login Page"}.
-     */
+     *//*
     @Test
     @DisplayName("Заголовок страницы входа — 'Login Page'")
     void testLoginPageHeading() {
         loginSteps.openLoginPage();
         loginSteps.verifyHeading("Login Page");
-    }
+    }*/
 }

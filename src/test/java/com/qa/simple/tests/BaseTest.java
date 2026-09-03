@@ -7,6 +7,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import org.openqa.selenium.chrome.ChromeOptions;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Базовый класс для всех UI-тестов проекта.
