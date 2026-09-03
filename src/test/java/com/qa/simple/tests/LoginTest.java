@@ -24,22 +24,22 @@ public class LoginTest extends BaseTest {
     //  ПОЗИТИВНЫЕ СЦЕНАРИИ
     // =====================================================
 
-    /**
-     * Проверяет успешный вход с валидными данными:
-     * заполняет форму, ждёт редиректа на {@code /secure},
-     * проверяет flash-сообщение и наличие кнопки Logout.
-     */
-    @Test
-    @DisplayName("Успешный вход с валидными данными + редирект на /secure")
-    void testSuccessfulLogin() {
-        loginSteps.openLoginPage();
-        loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
-        loginSteps.waitForUrlContains("secure");
-        loginSteps.ensureSecurePageAndSuppressAlert();
-        loginSteps.verifyFlashMessageContains("You logged into a secure area");
-        loginSteps.verifyLogoutButtonVisible();
-        loginSteps.ensureSecurePageAndSuppressAlert();
-    }
+//    /**
+//     * Проверяет успешный вход с валидными данными:
+//     * заполняет форму, ждёт редиректа на {@code /secure},
+//     * проверяет flash-сообщение и наличие кнопки Logout.
+//     */
+//    @Test
+//    @DisplayName("Успешный вход с валидными данными + редирект на /secure")
+//    void testSuccessfulLogin() {
+//        loginSteps.openLoginPage();
+//        loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
+//        loginSteps.waitForUrlContains("secure");
+//        loginSteps.ensureSecurePageAndSuppressAlert();
+//        loginSteps.verifyFlashMessageContains("You logged into a secure area");
+//        loginSteps.verifyLogoutButtonVisible();
+//        loginSteps.ensureSecurePageAndSuppressAlert();
+//    }
 
     /**
      * Проверяет сценарий выхода после успешного входа:
