@@ -35,6 +35,7 @@ public class LoginTest extends BaseTest {
         loginSteps.openLoginPage();
         loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
         loginSteps.waitForUrlContains("secure");
+        loginSteps.ensureSecurePageAndSuppressAlert();
         loginSteps.verifyFlashMessageContains("You logged into a secure area");
         loginSteps.verifyLogoutButtonVisible();
         loginSteps.ensureSecurePageAndSuppressAlert();
@@ -51,6 +52,7 @@ public class LoginTest extends BaseTest {
         loginSteps.openLoginPage();
         loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
         loginSteps.waitForUrlContains("secure");
+        loginSteps.ensureSecurePageAndSuppressAlert();
         loginSteps.performLogout();
         loginSteps.waitForUrlContains("login");
         loginSteps.ensureSecurePageAndSuppressAlert();

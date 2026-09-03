@@ -24,25 +24,32 @@ public class BaseTest {
         Configuration.reportsFolder = "target/allure-results";
         Configuration.browser = "chrome";
         Configuration.browserSize = "1920x1080";
-        Configuration.screenshots = true;          // явно включаем скриншоты Selenide (по умолчанию true, но лучше зафиксировать)
-        Configuration.savePageSource = true;      // сохраняем HTML страницы при падении (очень полезно для отладки форм)
+        Configuration.screenshots = true;
+        Configuration.savePageSource = true;
 
-        // Настройка ChromeOptions для CI (GitHub Actions)
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--headless=new");
-        options.addArguments("--window-size=1920,1080");
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--window-size=1920,1080");
+
+        // Флаги только для CI (GitHub Actions, GitLab CI и т.п.)
+        boolean isCI = System.getenv("CI") != null
+                || System.getenv("GITHUB_ACTIONS") != null
+                || System.getenv("GITLAB_CI") != null;
+
+        if (isCI) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+        }
 
         Configuration.browserCapabilities = options;
 
-        // Подключаем Allure с явными настройками вложений
+        // Подключаем Allure
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
-                .screenshots(true)                 // скриншоты в Allure
-                .savePageSource(true)             // HTML страницы в Allure
-                .includeSelenideSteps(true)      // шаги Selenide в отчёте (shouldBe, click и т.п.)
+                .screenshots(true)
+                .savePageSource(true)
+                .includeSelenideSteps(true)
         );
     }
 
