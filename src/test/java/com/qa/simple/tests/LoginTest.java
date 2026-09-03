@@ -35,7 +35,6 @@ public class LoginTest extends BaseTest {
         loginSteps.openLoginPage();
         loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
         loginSteps.waitForUrlContains("secure");
-        loginSteps.ensureSecurePageAndSuppressAlert();
         loginSteps.verifyFlashMessageContains("You logged into a secure area");
         loginSteps.verifyLogoutButtonVisible();
         loginSteps.ensureSecurePageAndSuppressAlert();
@@ -52,7 +51,6 @@ public class LoginTest extends BaseTest {
         loginSteps.openLoginPage();
         loginSteps.performLogin("tomsmith", "SuperSecretPassword!");
         loginSteps.waitForUrlContains("secure");
-        loginSteps.ensureSecurePageAndSuppressAlert();
         loginSteps.performLogout();
         loginSteps.waitForUrlContains("login");
         loginSteps.ensureSecurePageAndSuppressAlert();
@@ -85,7 +83,6 @@ public class LoginTest extends BaseTest {
     void testInvalidCredentials(String username, String password, String expectedError) {
         loginSteps.openLoginPage();
         loginSteps.performLogin(username, password);
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains(expectedError);
     }
@@ -99,7 +96,6 @@ public class LoginTest extends BaseTest {
     void testEmptyUsername() {
         loginSteps.openLoginPage();
         loginSteps.loginWithEmptyUsername("SuperSecretPassword!");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
@@ -113,7 +109,6 @@ public class LoginTest extends BaseTest {
     void testEmptyPassword() {
         loginSteps.openLoginPage();
         loginSteps.loginWithEmptyPassword("tomsmith");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your password is invalid!");
     }
@@ -127,7 +122,6 @@ public class LoginTest extends BaseTest {
     void testEmptyFields() {
         loginSteps.openLoginPage();
         loginSteps.loginWithEmptyFields();
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
@@ -145,7 +139,6 @@ public class LoginTest extends BaseTest {
     void testUsernameCaseSensitive() {
         loginSteps.openLoginPage();
         loginSteps.performLogin("TOMSMITH", "SuperSecretPassword!");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
@@ -159,7 +152,6 @@ public class LoginTest extends BaseTest {
     void testPasswordCaseSensitive() {
         loginSteps.openLoginPage();
         loginSteps.performLogin("tomsmith", "supersecretpassword!");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your password is invalid!");
     }
@@ -178,7 +170,6 @@ public class LoginTest extends BaseTest {
     void testXssInUsername() {
         loginSteps.openLoginPage();
         loginSteps.performLogin("<script>alert('xss')</script>", "SuperSecretPassword!");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
@@ -192,7 +183,6 @@ public class LoginTest extends BaseTest {
     void testSqlInjectionInUsername() {
         loginSteps.openLoginPage();
         loginSteps.performLogin("' OR 1=1 --", "SuperSecretPassword!");
-
         loginSteps.verifyStayOnLoginPage("login");
         loginSteps.verifyFlashMessageContains("Your username is invalid!");
     }
@@ -209,7 +199,6 @@ public class LoginTest extends BaseTest {
     @DisplayName("На странице входа есть все элементы формы")
     void testLoginPageElementsPresent() {
         loginSteps.openLoginPage();
-
         loginSteps.verifyUsernameFieldVisible();
         loginSteps.verifyPasswordFieldVisible();
         loginSteps.verifyLoginButtonVisible();
