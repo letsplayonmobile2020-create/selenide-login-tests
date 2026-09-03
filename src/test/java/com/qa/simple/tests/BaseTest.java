@@ -1,14 +1,14 @@
 package com.qa.simple.tests;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import com.qa.simple.config.TestConfig;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import org.openqa.selenium.chrome.ChromeOptions;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Базовый класс для всех UI-тестов проекта.
@@ -55,9 +55,19 @@ public class BaseTest {
         );
     }
 
-
     @AfterAll
     static void globalTeardown() {
         SelenideLogger.removeListener("AllureSelenide");
+    }
+
+    @AfterEach
+    void tearDown() {
+        if (utils.EnvUtils.isCi()) {
+            // CI: Полная изоляция. Гарантирует, что следующий тест начнется с чистого листа.
+            Selenide.closeWebDriver();
+        } else {
+            //чистим куки, чтобы тесты не мешали друг другу.
+            Selenide.clearBrowserCookies();
+        }
     }
 }

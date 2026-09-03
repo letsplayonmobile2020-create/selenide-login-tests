@@ -68,10 +68,7 @@ public class LoginSteps {
      */
     @Step("Шаг: Ждём перехода на страницу с фрагментом '{0}' и гасим алерт при необходимости")
     public void ensureSecurePageAndSuppressAlert() {
-        boolean isCI = System.getenv("CI") != null
-                || System.getenv("GITHUB_ACTIONS") != null
-                || System.getenv("GITLAB_CI") != null;
-        if (isCI) {
+        if (utils.EnvUtils.isCi()) {
             return; // В CI алертов нет, Robot не нужен
         }
         try {
